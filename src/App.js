@@ -33,6 +33,24 @@ class App extends Component {
     );
   }
 
+  handleCitySearch(event) {
+    let city = document.getElementById("cityBar").value;
+    console.log(city);
+    let citytrim = city.trim();
+    let cityUpper = citytrim.toUpperCase();
+    console.log(cityUpper);
+    url = "http://ctp-zip-api.herokuapp.com/city/" + cityUpper ;
+    
+    fetch(url)
+    .then(response =>response.json())
+    .then((json) => {
+      
+    })
+    .catch((err) => {
+      console.error(err);
+    })
+  }
+
   handleUserInput(event) {
     // console.log("input value" +event.target.value);
     let userInput = document.getElementById("searchBar").value;
@@ -101,7 +119,17 @@ class App extends Component {
             ></input>
             </form>
             <button name="zipSearch" onClick={this.handleUserInput}>Search</button>
-          
+            <p>City Search</p>
+          <form>
+            <input
+              id="cityBar"
+              name="citySearch"
+              type="text"
+              placeholder="City Name"
+              maxLength="50"
+            ></input>
+            </form>
+            <button name="citySearch" onClick={this.handleCitySearch}>Search</button>
           <div>
             {this.state.displayData}
           </div>

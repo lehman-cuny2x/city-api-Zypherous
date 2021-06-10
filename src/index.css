@@ -17,3 +17,9 @@ code {
   flex-direction:column;
   justify-content: left;
 }
+
+.zipList {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 8px;
+}
