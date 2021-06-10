@@ -15,6 +15,8 @@ class App extends Component {
     // this.apiData = []
     this.handleUserInput = this.handleUserInput.bind(this);
     this.createCard = this.createCard.bind(this);
+    this.createZipCard = this.createZipCard.bind(this);
+    this.handleCitySearch = this.handleCitySearch.bind(this);
   }
 
   createCard = (data, index) => {
@@ -27,28 +29,43 @@ class App extends Component {
         <li key={index+2}>
           Location: ({data.Lat},{data.Long})
         </li>
-        <li key={index+3}>Populagtion Est.: {data.EstimatedPopulation}</li>
+        <li key={index+3}>Population Est.: {data.EstimatedPopulation}</li>
         <li key={index+4}>Total Wages: {data.TotalWages}</li>
       </div>
     );
   }
+  createZipCard = (data, index) => {
+    return(
+    // <div className="zipList">{data}</div>
+    <li key={index}>{data}</li>
 
+    );
+  }
+  createUL = (data) =>{
+    return(
+      <ul>{data}</ul>
+    )
+  }
   handleCitySearch(event) {
     let city = document.getElementById("cityBar").value;
     console.log(city);
     let citytrim = city.trim();
     let cityUpper = citytrim.toUpperCase();
     console.log(cityUpper);
-    url = "http://ctp-zip-api.herokuapp.com/city/" + cityUpper ;
+    let url = "http://ctp-zip-api.herokuapp.com/city/" + cityUpper ;
     
     fetch(url)
     .then(response =>response.json())
     .then((json) => {
-      
-    })
+      this.setState({displayData: []});
+      let cityZip = json.map((element, index) =>  this.createZipCard(element, index));
+      cityZip.forEach((element, index) =>{
+        this.setState({displayData: this.state.displayData.concat([element])});
+      })
+      })
     .catch((err) => {
       console.error(err);
-    })
+    });
   }
 
   handleUserInput(event) {
@@ -130,7 +147,7 @@ class App extends Component {
             ></input>
             </form>
             <button name="citySearch" onClick={this.handleCitySearch}>Search</button>
-          <div>
+          <div className= "">
             {this.state.displayData}
           </div>
          
