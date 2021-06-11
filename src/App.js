@@ -17,6 +17,7 @@ class App extends Component {
     this.createCard = this.createCard.bind(this);
     this.createZipCard = this.createZipCard.bind(this);
     this.handleCitySearch = this.handleCitySearch.bind(this);
+    this.createUL = this.createUL.bind(this);
   }
 
   createCard = (data, index) => {
@@ -41,11 +42,13 @@ class App extends Component {
 
     );
   }
+
   createUL = (data) =>{
     return(
       <ul>{data}</ul>
-    )
+    );
   }
+
   handleCitySearch(event) {
     let city = document.getElementById("cityBar").value;
     console.log(city);
@@ -62,6 +65,10 @@ class App extends Component {
       cityZip.forEach((element, index) =>{
         this.setState({displayData: this.state.displayData.concat([element])});
       })
+      // use create UL to order the list nicer
+      let ziplist = this.createUL(this.state.displayData);
+      this.setState({displayData: []});
+      this.setState({displayData: this.state.displayData.concat([ziplist])});
       })
     .catch((err) => {
       console.error(err);
