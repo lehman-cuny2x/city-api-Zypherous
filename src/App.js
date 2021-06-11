@@ -53,6 +53,7 @@ class App extends Component {
     this.setState({displayData: []});
 
     let city = document.getElementById("cityBar").value;
+    document.getElementById("cityBar").value = "";
     console.log(city);
     let citytrim = city.trim();
     let cityUpper = citytrim.toUpperCase();
@@ -88,6 +89,8 @@ class App extends Component {
     let userInput = document.getElementById("searchBar").value;
     let url = this.handleZip(userInput);
     // console.log("handle:" + url);
+    document.getElementById("searchBar").value = "";
+
     fetch(url)
       .then((response) => response.json())
       .then((json) => {
