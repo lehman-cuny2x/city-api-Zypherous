@@ -18,6 +18,7 @@ class App extends Component {
     this.createZipCard = this.createZipCard.bind(this);
     this.handleCitySearch = this.handleCitySearch.bind(this);
     this.createUL = this.createUL.bind(this);
+    this.getDataforArray = this.getDataforArray.bind(this);
   }
 
   createCard = (data, index) => {
@@ -35,13 +36,62 @@ class App extends Component {
       </div>
     );
   }
-  createZipCard = (data, index) => {
+  createZipCard = (data) => {
     return(
-    // <div className="zipList">{data}</div>
-    <li key={index}>{data}</li>
-
+    <div className="zipList">
+      <li>{data.Zipcode}</li>
+      <li>{data.State}</li>
+      <li>{data.City}</li>
+    </div>
+    // <div><li key={index}>:Zip:{data.Zipcode}+:State:{data.State}+:City:{data.City}</li></div>
+    // <div>
+    //   <li key={index}>:Zip:{data.Zipcode}
+    //   :State:{data.State}
+    //   :City:{data.City}</li>
+    // </div>
+    
     );
   }
+
+  getDataforArray(list){
+    let arrayForSort = [];
+    list.forEach(zipcode =>{
+      let url = this.handleZip(zipcode);
+      fetch(url)
+      .then(response =>response.json())
+      .then((json) => {
+        json.forEach(item =>{
+        let obj = {}
+        obj["State"] = item.State;
+        // console.log(item.State);
+        obj["Zipcode"] = item.Zipcode;
+        obj["City"] = item.City;
+        // console.log(obj);
+        arrayForSort.push(obj);
+        });
+       })
+    .catch(err =>{
+      console.error(err);
+    });
+   });
+   arrayForSort = arrayForSort.sort((a, b) => (a.State > b.State) ? 1 : (a.State === b.State) ? ((a.Zipcode > b.Zipcode) ? 1 : -1) : -1 );
+   console.log("array for sort after sort:" );
+   console.log(arrayForSort);
+   
+  //  arrayForSort.forEach((object,index) =>{
+  //   let element = this.createZipCard(object,index);
+  //   console.log(element);
+  //   this.setState({displayData: this.state.displayData.concat([element])});
+  //  })
+   let disDat = [];
+   for(var i = 0; i <arrayForSort.length;i++){
+    let ele = this.createZipCard(arrayForSort[i]);
+    disDat.push(ele);
+   }
+   console.log(disDat);
+   this.setState({displayData: []});
+   }
+  
 
   createUL = (data) =>{
     return(
@@ -54,10 +104,10 @@ class App extends Component {
 
     let city = document.getElementById("cityBar").value;
     document.getElementById("cityBar").value = "";
-    console.log(city);
+    // console.log(city);
     let citytrim = city.trim();
     let cityUpper = citytrim.toUpperCase();
-    console.log(cityUpper);
+    // console.log(cityUpper);
     let url = this.state.cityApi + cityUpper ;
     
     fetch(url)
@@ -68,14 +118,17 @@ class App extends Component {
       //   this.setState({displayData: this.state.displayData.concat(["Cannot GET /city/"])});
       //   return;
       // }
-      let cityZip = json.map((element, index) =>  this.createZipCard(element, index));
-      cityZip.forEach((element, index) =>{
-        this.setState({displayData: this.state.displayData.concat([element])});
-      })
-      // use create UL to order the list nicer
-      let ziplist = this.createUL(this.state.displayData);
-      this.setState({displayData: []});
-      this.setState({displayData: this.state.displayData.concat([ziplist])});
+      // let array = json.map(element);
+      this.getDataforArray(json);
+
+      // let cityZip = json.map((element, index) =>  this.createZipCard(element, index));
+      // cityZip.forEach((element, index) =>{
+      //   this.setState({displayData: this.state.displayData.concat([element])});
+      // })
+      // // use create UL to order the list nicer
+      // let ziplist = this.createUL(this.state.displayData);
+      // this.setState({displayData: []});
+      // this.setState({displayData: this.state.displayData.concat([ziplist])});
       })
     .catch((err) => {
       console.error(err);
