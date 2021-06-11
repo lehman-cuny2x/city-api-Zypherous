@@ -61,14 +61,13 @@ class App extends Component {
     let url = this.state.cityApi + cityUpper ;
     
     fetch(url)
-    .then(response =>{
-      response.json()
-    })
+    .then(response => response.json())
+    //  console.log(response.json);
     .then((json) => {
-      if(json === undefined){
-        this.setState({displayData: this.state.displayData.concat(["Cannot GET /city/"])});
-        return;
-      }
+      // if(json.parse() === "Cannot GET /city/" ){
+      //   this.setState({displayData: this.state.displayData.concat(["Cannot GET /city/"])});
+      //   return;
+      // }
       let cityZip = json.map((element, index) =>  this.createZipCard(element, index));
       cityZip.forEach((element, index) =>{
         this.setState({displayData: this.state.displayData.concat([element])});

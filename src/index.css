@@ -21,5 +21,9 @@ code {
 .zipList {
   display: flex;
   flex-wrap: wrap;
-  font-size: 8px;
+  font-size: 18px;
+  width: 500px;
+  padding: 45px;
+  gap: 35px;
+  list-style: none;
 }
