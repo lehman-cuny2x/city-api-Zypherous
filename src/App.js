@@ -45,7 +45,7 @@ class App extends Component {
 
   createUL = (data) =>{
     return(
-      <ul>{data}</ul>
+      <ul className="zipList">{data}</ul>
     );
   }
 
