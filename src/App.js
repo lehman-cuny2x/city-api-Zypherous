@@ -9,7 +9,7 @@ class App extends Component {
     super();
     this.state = {
       apiUrl: "http://ctp-zip-api.herokuapp.com/zip/",
-      cityApi: "",
+      cityApi: "http://ctp-zip-api.herokuapp.com/city/",
       displayData: [],
     };
     // this.apiData = []
@@ -50,17 +50,24 @@ class App extends Component {
   }
 
   handleCitySearch(event) {
+    this.setState({displayData: []});
+
     let city = document.getElementById("cityBar").value;
     console.log(city);
     let citytrim = city.trim();
     let cityUpper = citytrim.toUpperCase();
     console.log(cityUpper);
-    let url = "http://ctp-zip-api.herokuapp.com/city/" + cityUpper ;
+    let url = this.state.cityApi + cityUpper ;
     
     fetch(url)
-    .then(response =>response.json())
+    .then(response =>{
+      response.json()
+    })
     .then((json) => {
-      this.setState({displayData: []});
+      if(json === undefined){
+        this.setState({displayData: this.state.displayData.concat(["Cannot GET /city/"])});
+        return;
+      }
       let cityZip = json.map((element, index) =>  this.createZipCard(element, index));
       cityZip.forEach((element, index) =>{
         this.setState({displayData: this.state.displayData.concat([element])});
@@ -72,6 +79,7 @@ class App extends Component {
       })
     .catch((err) => {
       console.error(err);
+      // this.setState({displayData: err});
     });
   }
 
@@ -83,12 +91,17 @@ class App extends Component {
     fetch(url)
       .then((response) => response.json())
       .then((json) => {
+        console.log(json);
                                                                                         // console.log("json:" + JSON.stringify(json));
                                                                                         // json.forEach(element =>{
                                                                                         //   createCard(element);
                                                                                         // this.displayData = //useset state
 
         this.setState({displayData: []});
+        if(json === undefined){
+          this.setState({displayData: this.state.displayData.concat(["Not Found"])});
+          return;
+        }
                                                                                         // let data = JSON.parse(JSON.stringify(json));
                                                                                         // console.log(data);
         let cards = json.map((element, index) =>this.createCard(element, index));
@@ -110,14 +123,17 @@ class App extends Component {
         console.log(this.state.displayData);
       })
       .catch((err) => {
-        console.error('Error: ',err);
+        console.error(err);
+        this.setState({displayData: []});
+        this.setState({displayData: this.state.displayData.concat(["Not Found"])});
       });
   }
+
 
   handleZip(zipCode) {
     let url = this.state.apiUrl;
     // console.log("url in handlezip pre zip" +url +" zip in handle zip" +zipCode);
-    if (isNaN(zipCode)) {
+    if (isNaN(zipCode) || zipCode.toString().length < 5) {
       url = url + "0";
       alert("Please enter a 5 digit zip-code");
     } else {
